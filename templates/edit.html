@@ -1,0 +1,19 @@
+{% include "header.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+    <div class="container w-75">
+        <h1 class="title">Edit</h1>
+
+        <form action="" method="post">
+            {{ form.csrf_token }}
+            <p class="edit-form">Task: {{ form.todo(size=30) }}</p>
+            <p class="edit-form">{{ form.due_date.label }}: {{ form.due_date(value=form.due_date.data) }} {{form.end_time}}</p>
+            <p class="edit-form">{{form.complete}} {{ form.complete.label }}</p>
+            <p class="edit-form">{{form.important}} {{ form.important.label }}</p>
+            {{ form.btn_edit(value="Edit")}}
+            {{ form.btn_cancel(value="Cancel")}}
+        </form>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,42 @@
+h1.title, .masthead {
+    padding-top: 3rem;
+}
+
+.todo {
+    padding: 2rem 0 2rem 0;
+}
+
+.date-span {
+    color: cornflowerblue;
+    font-weight: bold;
+}
+
+s {
+    text-decoration-line: line-through;
+    text-decoration-color: black;
+}
+
+.flash-msg {
+    color: chocolate;
+    padding-top: 2em;
+}
+
+.add-item {
+    padding-top: 3em;
+}
+
+.bi-trash {
+    cursor: pointer;
+}
+
+.fa-trash {
+    color: red;
+}
+
+.important-task {
+    color: gold;
+}
+
+/* .edit-form{
+    padding-top: 0.5em;
+} */

@@ -1,0 +1,50 @@
+{% include "header.html" %}
+{# {% extends 'bootstrap/base.html' %} #}
+
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block content %}
+  <!-- Page Header -->
+  <header class="masthead">
+    <div class="overlay"></div>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <div class="page-heading">
+            <h1>Register</h1>
+            <span class="subheading"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+
+        <!-- <div class="flash-msg"> -->
+          {% with messages = get_flashed_messages() %}
+            {% if messages %}
+              {% for message in messages %}
+               <p>{{ message }}</p>
+              {% endfor %}
+            {% endif %}
+          {% endwith %}
+        <!-- </div> -->
+
+        {# {{ wtf.quick_form(form, novalidate=True, button_map={"submit": "primary"}) }} #}
+
+        <form action="" method="post" novalidate class="form-register">
+          {{ form.csrf_token }}
+          <p>{{ form.email }}</p>
+          <p>{{ form.password }}</p>
+          <p>{{ form.name }}</p>
+          <p>{{ form.submit }}</p>
+        </form>
+
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

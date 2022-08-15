@@ -1,0 +1,206 @@
+{% include "header.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+    <div class="container w-75">
+        <div class="row">
+            <div class="col">
+
+                <form action="" method="post" novalidate class="add-item">
+                    {{ form.csrf_token }}
+                    {{ form.todo(size=30) }}
+                    {{ form.due_date }}                    
+                    {{ form.end_time }}
+
+                    {{ form.btn_add(value="Add")}}
+                    
+                </form>
+                <p class="flash-msg">
+                    {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                    {% for msg in messages %}
+                    {{msg}}
+                    {% endfor %}
+                    {% endif %}
+                    {% endwith %}
+                </p>
+
+                <div>
+                    <ul class="list-group todo">
+                        {% for important in todo_important %}
+                        <li class="list-group-item py-3">
+                          <!-- {{ important.id }} -->
+                            {% if important.complete == False %}
+                              <input class="form-check-input me-2" type="checkbox" , aria-label="...">
+                              <strong>{{ important.title }}</strong> 
+                            {% else %}
+                              <input class="form-check-input me-2" type="checkbox" , aria-label="..." checked>
+                              <s><strong>{{ important.title }}</strong></s>
+                            {% endif %}
+
+                            <small class="text-muted">
+                               due on {{important.due_date}} 
+                               {% if important.reminder %}
+                               {{important.reminder.strftime("%H:%M")}}
+                               {% endif %}
+                               
+                            </small>
+
+                            <span class="float-end"> 
+                              {% if important.important %}
+                              <span class="d-inline-block" tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus" 
+                              data-bs-content="Important" data-bs-placement="left">
+                                <i class="fa-solid fa-star me-3 important-task"></i> 
+                              </span> 
+                              {% endif %}
+                              
+                              <span class="d-inline-block" tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus" 
+                              data-bs-content="Delete" data-bs-placement="left">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red"
+                                  class="bi bi-trash me-3" id="{{important.id}}" 
+                                  data-bs-toggle="modal" data-bs-target="#deleteModal" viewBox="0 0 16 16">
+                                  <path
+                                      d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
+                                  <path fill-rule="evenodd"
+                                      d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
+                              </svg>
+                              </span>
+
+                              <span class="d-inline-block" tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus" 
+                              data-bs-content="Edit" data-bs-placement="left">
+                              <a href="{{url_for('edit', todo_id=important.id)}}">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                    fill="rgba(25, 172, 25, 0.781)" class="bi bi-pencil-fill  me-3"
+                                    viewBox="0 0 16 16">
+                                    <path
+                                        d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z" />
+                                </svg>
+                              </a>  
+                              </span>                          
+
+                                <!-- Modal -->
+                                <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" 
+                                aria-hidden="true">
+                                  <div class="modal-dialog">
+                                    <div class="modal-content">
+                                      <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Delete Confirmation</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                      </div>
+                                      <div class="modal-body">
+                                        This task will be deleted.
+                                      </div>
+                                      <div class="modal-footer">
+                                        <a id='delete-this' href="">
+                                          <button type="button" class="btn btn-primary btn-sm" data-bs-dismiss="modal">Delete</button>
+                                        </a>
+                                        <a href="{{url_for('home')}}">
+                                          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+                                        </a>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>                                
+                                <!-- modal -->                                
+                            </span>
+                        </li>
+                        {% endfor %}
+
+                        {% for todo in todo_list %}
+                        <li class="list-group-item py-3">
+                          <!-- {{ todo.id }} -->
+                            {% if todo.complete == False %}
+                              <input class="form-check-input me-2" type="checkbox" , aria-label="...">
+                              <strong>{{ todo.title }}</strong> 
+                            {% else %}
+                              <input class="form-check-input me-2" type="checkbox" , aria-label="..." checked>
+                              <s><strong>{{ todo.title }}</strong></s>
+                            {% endif %}
+
+                            <small class="text-muted">
+                               due on {{todo.due_date}} 
+                               {% if todo.reminder %}
+                               {{todo.reminder.strftime("%H:%M")}}
+                               {% endif %}
+                               
+                            </small>
+
+                            <span class="float-end"> 
+                              {% if todo.important %}
+                              <i class="fa-solid fa-star me-3 important-task"></i>                               
+                              {% endif %}
+                              
+
+                              <span class="d-inline-block" tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus" 
+                              data-bs-content="Delete" data-bs-placement="left">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red"
+                                  class="bi bi-trash me-3" id="{{todo.id}}" 
+                                  data-bs-toggle="modal" data-bs-target="#deleteModal" viewBox="0 0 16 16">
+                                  <path
+                                      d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
+                                  <path fill-rule="evenodd"
+                                      d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
+                              </svg>
+                              </span>
+
+                              <span class="d-inline-block" tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus" 
+                              data-bs-content="Edit" data-bs-placement="left">
+                              <a href="{{url_for('edit', todo_id=todo.id)}}">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                    fill="rgba(25, 172, 25, 0.781)" class="bi bi-pencil-fill  me-3"
+                                    viewBox="0 0 16 16">
+                                    <path
+                                        d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z" />
+                                </svg>
+                              </a>   
+                              </span>
+
+                                <!-- Modal -->
+                                <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" 
+                                aria-hidden="true">
+                                  <div class="modal-dialog">
+                                    <div class="modal-content">
+                                      <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Delete Confirmation</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                      </div>
+                                      <div class="modal-body">
+                                        This task will be deleted.
+                                      </div>
+                                      <div class="modal-footer">
+                                        <a id='delete-this' href="">
+                                          <button type="button" class="btn btn-primary btn-sm" data-bs-dismiss="modal">Delete</button>
+                                        </a>
+                                        <a href="{{url_for('home')}}">
+                                          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+                                        </a>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <!-- modal -->
+                                
+                            </span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+    
+    <script>
+      $('svg').click(function () {
+        $('#delete-this').attr("href", "delete/"+this.id)
+      });
+
+      var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+      var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+        return new bootstrap.Popover(popoverTriggerEl)
+      })
+    </script>
+   
+</body>
+
+</html>
