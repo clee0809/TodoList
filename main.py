@@ -1,4 +1,3 @@
-from operator import or_
 from flask import Flask, render_template, url_for, redirect, request, flash
 from flask_sqlalchemy import SQLAlchemy
 from forms import TodoListForm, RegisterForm, LoginForm, AlarmListForm
@@ -52,8 +51,8 @@ class User(UserMixin, db.Model):
     name = db.Column(db.String(100))
     todo_list = relationship("Todo", back_populates="user")
 
-# db.init_app(app)
-# db.create_all()
+db.init_app(app)
+db.create_all()
 ## ---------------------- DB -------------------------------------##
 
 
